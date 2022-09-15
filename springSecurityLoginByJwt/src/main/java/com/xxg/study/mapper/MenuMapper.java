@@ -1,15 +1,15 @@
 package com.xxg.study.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xxg.study.domain.Menu;
-import com.xxg.study.domain.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 
-@Mapper
+@Repository
+@DS("master")
 public interface MenuMapper extends BaseMapper<Menu> {
 
 
