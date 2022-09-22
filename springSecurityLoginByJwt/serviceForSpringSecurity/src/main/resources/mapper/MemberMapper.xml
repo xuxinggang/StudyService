@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxg.study.mapper.MemberMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xxg.study.domain.Member">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="mem_nme" property="memNme" />
+        <result column="mem_lvl" property="memLvl" />
+        <result column="men_addr" property="menAddr" />
+        <result column="cre_tme" property="creTme" />
+        <result column="upd_tme" property="updTme" />
+        <result column="sts" property="sts" />
+        <result column="bal" property="bal" />
+        <result column="rsv_fld" property="rsvFld" />
+        <result column="rsv_fld1" property="rsvFld1" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, mem_nme, mem_lvl, men_addr, cre_tme, upd_tme, sts, bal, rsv_fld, rsv_fld1
+    </sql>
+
+</mapper>

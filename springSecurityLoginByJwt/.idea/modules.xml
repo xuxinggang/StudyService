@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/nacosService-consumer/nacosService-consumer.iml" filepath="$PROJECT_DIR$/nacosService-consumer/nacosService-consumer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nacosService8848/nacosService8848.iml" filepath="$PROJECT_DIR$/nacosService8848/nacosService8848.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serviceForSpringSecurity/serviceForSpringSecurity.iml" filepath="$PROJECT_DIR$/serviceForSpringSecurity/serviceForSpringSecurity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springSecurityLoginByJwt.iml" filepath="$PROJECT_DIR$/springSecurityLoginByJwt.iml" />
+    </modules>
+  </component>
+</project>

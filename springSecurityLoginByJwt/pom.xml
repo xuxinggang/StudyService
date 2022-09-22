@@ -11,6 +11,7 @@
     <modules>
         <module>nacosService8848</module>
         <module>nacosService-consumer</module>
+        <module>serviceForSpringSecurity</module>
     </modules>
 
     <properties>

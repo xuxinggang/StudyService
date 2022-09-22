@@ -13,14 +13,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @MapperScan("com.xxg.study.mapper")
 @ComponentScan(basePackages = {"com.xxg.study.mapper","com.xxg.study.controller","com.xxg.study.config","com.xxg.study.aspect","com.xxg.study.service","com.xxg.study.serializerUtils"})
-public class TokenTestByJwtApplication extends SpringBootServletInitializer {
+public class TokenTestByJwtApplication  {
     public static void main(String[] args) {
          SpringApplication.run(TokenTestByJwtApplication.class, args);
         System.out.println("测试Security");
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(TokenTestByJwtApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(TokenTestByJwtApplication.class);
+//    }
 }

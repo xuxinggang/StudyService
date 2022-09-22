@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    dynamic:
+      primary: db1   #默认数据库
+      datasource:
+        db1:
+          url: jdbc:mysql://10.0.2.23:3306/admin-template?useUnicode=true&characterEncoding=utf-8
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        db2:
+          url: jdbc:mysql://10.0.2.23:3306/admin-template?useUnicode=true&characterEncoding=utf-8
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.cj.jdbc.Driver
+      druid:
+        initial-size: 5  #初始大小
+        max-active: 20		#最大活跃
+        min-idle: 5		#最小
+        max-wait: 60000		#最长等待时间
+        time-between-eviction-runs-millis: 60000  #俩次之间的间隔时间 毫秒
+        min-evictable-idle-time-millis: 300000		#多长时间不访问就称最小
+        validation-query: SELECT 1 FROM DUAL   #验证查询
+        test-while-idle: true			#是否开启闲置测试
+        test-on-borrow: false    #在这个上测试
+        test-on-return: false   #开启返回测试
+        filters: stat,wall,log4j  #配置过滤器
+        stat:
+          log-slow-sql: true

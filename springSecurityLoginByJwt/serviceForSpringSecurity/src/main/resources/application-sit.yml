@@ -1,0 +1,42 @@
+server:
+  port: 8090
+spring:
+  #mysql数据源
+  datasource:
+    dynamic:
+      primary: master   #默认数据库
+      datasource:
+        master:
+          url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8&serverTimezone=UTC
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        sub:
+          url: jdbc:mysql://localhost:3306/naocs?characterEncoding=utf-8&serverTimezone=UTC
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+      druid:
+        initial-size: 5  #初始大小
+        max-active: 20		#最大活跃
+        min-idle: 5		#最小
+        max-wait: 60000		#最长等待时间
+        time-between-eviction-runs-millis: 60000  #俩次之间的间隔时间 毫秒
+        min-evictable-idle-time-millis: 300000		#多长时间不访问就称最小
+        validation-query: SELECT 1 FROM DUAL   #验证查询
+        test-while-idle: true			#是否开启闲置测试
+        test-on-borrow: false    #在这个上测试
+        test-on-return: false   #开启返回测试
+        filters: stat,wall,log4j  #配置过滤器
+        stat:
+          log-slow-sql: true
+
+  security:
+    basic:
+      path: /swagger-ui.html
+      enabled: true
+    user:
+      name: test #账号
+      password: 123456  #密码
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml

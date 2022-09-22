@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxg.study.mapper.MenuMapper">
+    <resultMap id="permissionMap" type="com.xxg.study.domain.Menu">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="role" column="role"/>
+        <result property="userId" column="userId"/>
+    </resultMap>
+
+    <sql id="queryCondition">
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="role != null and role != ''">
+                and role = #{role}
+            </if>
+            <if test="userId != null and userId != ''">
+                and userId = #{userId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectPermsByUserId" parameterType="java.lang.Long" resultMap="permissionMap">
+        SELECT * FROM sys_menu
+       WHERE userId = #{userId}
+    </select>
+</mapper>
