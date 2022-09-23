@@ -1,45 +1,236 @@
 package com.xxg.study.Thread;
 
-import org.springframework.context.annotation.Bean;
+import com.xxg.study.domain.Member;
+import com.xxg.study.mapper.MemberMapper;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.concurrent.*;
 
-
+/**
+ * 异步调用线程池
+ */
 @EnableAsync(proxyTargetClass=true)
-    @Configuration
-    public class AsyncThread {
-    //todo ：线程池的调用
-        /**
-         * IO密集型任务  = 一般为2*CPU核心数（常出现于线程中：数据库数据交互、文件上传下载、网络数据传输等等）
-         * CPU密集型任务 = 一般为CPU核心数+1（常出现于线程中：复杂算法）
-         * 混合型任务  = 视机器配置和复杂度自测而定
-         */
-//        @Bean(name = "asyncTaskExecutor")
-//        public Executor asyncTaskExecutor() {
-//            ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-//            //1: 核心线程数目
-//            executor.setCorePoolSize(4);
-//            //2: 指定最大线程数,只有在缓冲队列满了之后才会申请超过核心线程数的线程
-//            executor.setMaxPoolSize(10);
-//            //3: 队列中最大的数目
-//            executor.setQueueCapacity(200);
-//            //4: 线程名称前缀
-//            executor.setThreadNamePrefix("LocustTask-");
-//            //5:当pool已经达到max size的时候，如何处理新任务
-//            // CallerRunsPolicy: 会在execute 方法的调用线程中运行被拒绝的任务,如果执行程序已关闭，则会丢弃该任务
-//            // AbortPolicy: 抛出java.util.concurrent.RejectedExecutionException异常
-//            // DiscardOldestPolicy: 抛弃旧的任务
-//            // DiscardPolicy: 抛弃当前的任务
-//            executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-//            //6: 线程空闲后的最大存活时间(默认值 60),当超过了核心线程出之外的线程在空闲时间到达之后会被销毁
-//            executor.setKeepAliveSeconds(60);
-//            //7:线程空闲时间,当线程空闲时间达到keepAliveSeconds(秒)时,线程会退出,直到线程数量等于corePoolSize,如果allowCoreThreadTimeout=true,则会直到线程数量等于0
-//            executor.setAllowCoreThreadTimeOut(false);
-//            executor.initialize();
-//            return TtlExecutors.getTtlExecutor(executor);
-//        }
+@Configuration
+public class AsyncThread {
+
+    @Resource
+    private MemberMapper memberMapper;
+
+
+
+    //todo ：线程池的调用;线程池一般分位俩类 1、ThreadPoolExecutor 2、Executors 来创建线程池
+
+//            1. Executors.newFixedThreadPool：创建⼀个固定⼤⼩的线程池，可控制并发的线程数，超出的线程会在队列中等待；
+//            2. Executors.newCachedThreadPool：创建⼀个可缓存的线程池，若线程数超过处理所需，缓存⼀段时间后会回收，若线程数不够，则新建线程；
+//            3. Executors.newSingleThreadExecutor：创建单个线程数的线程池，它可以保证先进先出的执⾏顺序；
+//            4. Executors.newScheduledThreadPool：创建⼀个可以执⾏延迟任务的线程池；
+//            5. Executors.newSingleThreadScheduledExecutor：创建⼀个单线程的可以执⾏延迟任务的线程池；
+//            6. Executors.newWorkStealingPool：创建⼀个抢占式执⾏的线程池（任务执⾏顺序不确定）【JDK1.8 添加】。
+//            7. ThreadPoolExecutor：最原始的创建线程池的⽅式，它包含了 7 个参数可供设置，后⾯会详细讲。
+
+    /**
+     * 固定线程池
+     */
+    void newFixedThreadPool(){
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Member member = new Member();
+        member=memberMapper.selectById(1);
+        Member finalMember = member;
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("固定线程池！！！！"+ finalMember);
+                System.out.println(Thread.currentThread().getName()+" ");
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        },member);
+    }
+
+    /**
+     * 有结果回调
+     */
+    void newFixedThreadPoolCallBack(){
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Member member = new Member();
+        member=memberMapper.selectById(1);
+        Member finalMember = member;
+        Future<Object> submit = executorService.submit(new Callable<Object>() {
+            @Override
+            public Integer call() throws Exception {
+                return 2;
+            }
+        });
+        try {
+            System.out.println(submit.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 缓存线程池
+     */
+    @Test
+    void newCachedThreadPool(){
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < 100; i++) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName()+" ");
+                }
+            });
+        }
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        });
+    }
+    /**
+     * 单一线程池
+     */
+    void newSingleThreadExecutor(){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Member member = new Member();
+        member=memberMapper.selectById(1);
+        Member finalMember = member;
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("固定线程池！！！！"+ finalMember);
+                System.out.println(Thread.currentThread().getName()+" ");
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        },member);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        });
+    }
+
+    /**
+     * 可延迟线程池队列
+     */
+    void newScheduledThreadPool(){
+        ExecutorService executorService = Executors.newScheduledThreadPool(2);
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName()+" ");
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        });
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        });
+
+    }
+
+    /**
+     * 延时线程池
+     */
+   static void newScheduledThreadPoolDelay(){
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+
+        executorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("我是延时执行线程池！！！！");
+                executorService.shutdown();
+            }
+        },1,TimeUnit.MINUTES);
+
+        System.out.println("我免费拉！！！！");
+    }
+
+    /**
+     * 初始20秒后执行，然后以每四秒执行一次
+     */
+    static void newScheduledThreadPoolDelayAverage(){
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        executorService.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("我是平均延时执行线程池！！！！"+ LocalDateTime.now());
+            }
+        },2,0,TimeUnit.SECONDS);
+//        executorService.scheduleAtFixedRate(new Runnable() {
+//            @Override
+//            public void run() {
+//                System.out.println("我是平均延时执行线程池！！！！"+ LocalDateTime.now());
+//            }
+//        },20,4, TimeUnit.SECONDS);
+
+        System.out.println("我免费拉！！！！");
+    }
+
+    public static void main(String[] args) {
+//        newScheduledThreadPoolDelay();
+        newScheduledThreadPoolDelayAverage();
+    }
+    public static void mains(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Future<Object> submit = executorService.submit(new Callable<Object>() {
+            @Override
+            public Integer call() throws Exception {
+                return 2;
+            }
+        });
+        try {
+            System.out.println(submit.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+//        ExecutorService executorService = Executors.newFixedThreadPool(2);
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Member member = new Member();
+        member.setId(100000L);
+        member.setBal(new BigDecimal("999999"));
+        Member finalMember = member;
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("固定线程池！！！！"+ finalMember);
+                System.out.println(Thread.currentThread().getName()+" ");
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        },member);
+        long before = System.currentTimeMillis();
+
+        try {
+            System.out.println();
+            executorService.awaitTermination(10,TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        long late = System.currentTimeMillis();
+        System.out.println(late-before);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(Thread.currentThread().getName()+" ");
+            }
+        });
+    }
 }

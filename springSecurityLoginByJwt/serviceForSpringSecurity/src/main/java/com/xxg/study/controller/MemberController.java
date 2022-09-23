@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * <p>
@@ -42,7 +44,7 @@ public class MemberController {
     public AjaxResult addMember(MemberVo memberVo){
         List<Member> members=new ArrayList<>();
         Member member = new Member();
-        for (int i = 0; i < 2432; i++) {
+        for (int i = 0; i < 100000; i++) {
             BeanUtils.copyProperties(memberVo,member);
             member.setBal(new BigDecimal(i++));
             member.setId(new Random().nextLong());
@@ -58,14 +60,26 @@ public class MemberController {
     @PostMapping("/member/update")
     public AjaxResult updateMember(){
         List<Member> members = memberMapper.selectList(null);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("批量更新前："+now);
         members.forEach(e->{
-             e.setUpdTme(LocalDateTime.now());
-             e.setMemLvl(2L);
-             e.setSts("1");
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    e.setUpdTme(LocalDateTime.now());
+                    e.setMemLvl(1L);
+                    e.setSts("0");
+                    memberMapper.update(e,null);
+                }
+            });
+
          });
-        boolean b = memberService.updateBatchById(members);
+//        boolean b = memberService.updateBatchById(members);
+        LocalDateTime after = LocalDateTime.now();
+        System.out.println("批量更新后："+after);
         AjaxResult ajaxResult;
-        if (b){
+        if (true){
             ajaxResult = new AjaxResult("200","批量更新成功","YES");
         }else {
             ajaxResult = new AjaxResult("500","批量更新失败","YES");
