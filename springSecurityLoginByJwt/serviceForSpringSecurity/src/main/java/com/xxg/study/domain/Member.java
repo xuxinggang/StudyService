@@ -55,6 +55,14 @@ public class Member implements Serializable {
 
     private String rsvFld1;
 
+    public Member(){}
+
+    public Member(long l, long l1, String s) {
+        this.id=l;
+        this.userId=l;
+        this.memNme=s;
+    }
+
 
     public Long getId() {
         return id;

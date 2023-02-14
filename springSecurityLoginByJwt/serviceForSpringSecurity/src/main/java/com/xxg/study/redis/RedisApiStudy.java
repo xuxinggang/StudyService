@@ -1,13 +1,12 @@
 package com.xxg.study.redis;
 
 
-import com.baomidou.dynamic.datasource.tx.ConnectionFactory;
-import com.xxg.study.config.RedisConfig;
+import com.xxg.study.common.AjaxResult;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -68,13 +65,75 @@ public class RedisApiStudy {
         System.out.println(redisTemplate.opsForHash().getOperations().boundHashOps("keys"));
         redisTemplate.opsForHash().getOperations().boundHashOps("keys").values().forEach(e-> System.out.println(e));
         redisTemplate.opsForHash().getOperations().expire("x",2, TimeUnit.MINUTES);
+        redisTemplate.opsForHash().entries("hash");
         return getName();
     }
+
+    /**
+     * redis api list set 操作
+     * @return
+     */
+    @GetMapping("setOrList")
+    public AjaxResult setOrList(){
+        //序列化
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());
+
+        ListOperations list = redisTemplate.opsForList();
+        SetOperations setOperations = redisTemplate.opsForSet();
+//        redisTemplate.delete("l1");
+//
+//        list.leftPushAll("l1",1,2,3,4,5,6,7);
+//        System.out.println(list.leftPop("l1"));
+//        System.out.println(list.leftPop("l1",5,TimeUnit.MILLISECONDS));//索引下标
+//        System.out.println(list.leftPop("l1", Duration.ZERO));
+//        list.range("l1",0,6).forEach(e->{
+//            System.out.println(e);
+//        });
+//        list.leftPush("l2",8,9);
+//        list.range("l2",0,4).forEach(e->{
+//            System.out.println(e);
+//        });
+
+
+//        list.leftPush("myList","a1");
+//        list.leftPushAll("myList","b1","c1","d1","e1");
+//
+//        System.out.println(list.leftPop("myList"));//一次去除最右边的数据
+//        Member member = new Member(1l, 2l, "12");
+//        list.rightPush("r1",member,member);
+//        list.range("r1",0,-1).forEach(e-> System.out.println(e));
+
+//        list.range("myList",0,-1).forEach(e-> System.out.println(e));
+
+        setOperations.add("set",1,2,3,4,5,6);
+        setOperations.add("set1",1,2,3,4,5,6,8,9);
+        setOperations.difference("set","set1").forEach(e-> System.out.println(e));
+
+
+        ZSetOperations zSetOperations = redisTemplate.opsForZSet();
+        zSetOperations.add("zset","a",1.0);
+        zSetOperations.add("zset","b",2.0);
+        zSetOperations.add("zset","v",3.0);
+        zSetOperations.add("zset","ac",4.0);
+        zSetOperations.add("zset","aa",5.0);
+        zSetOperations.add("zset","a1",6.0);
+        zSetOperations.range("zset",0,-1).forEach(e-> System.out.println(e));
+        zSetOperations.remove("zset,a,aa,b");
+        System.out.println(zSetOperations.size("zset"));
+        System.out.println(zSetOperations.zCard("zset"));
+        return new AjaxResult("200", "操作成功", list.range("myList",0,-1).toString());
+    }
+
+
 
     private String getName() {
 //        String name=(String)redisTemplate.opsForValue().get("name");
         String name=(String)redisTemplate.opsForHash().get("hash","hash1");
         return name;
     }
+
 
 }
