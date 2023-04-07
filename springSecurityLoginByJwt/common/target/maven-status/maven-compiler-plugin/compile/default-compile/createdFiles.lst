@@ -1,0 +1,4 @@
+com\xxg\study\nacos\FeignClientProvide.class
+com\xxg\study\config\FallbackFactoryTest.class
+com\xxg\study\nacos\TestFallbackFactory$1.class
+com\xxg\study\nacos\TestFallbackFactory.class
