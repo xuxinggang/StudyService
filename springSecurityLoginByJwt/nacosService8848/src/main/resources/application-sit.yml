@@ -1,19 +1,54 @@
 server:
-  port: 8099
+  port: 8849
 spring:
+  cloud:
+    sentinel:
+      transport:
+        port: 6666
+        dashboard: localhost:9999
+      web-context-unify: false
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8850   #注册中心地址
+        config:
+          file-extension: yml
+  application:
+    name: nacos-provide
   #mysql数据源
   datasource:
-    url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+    dynamic:
+      primary: master   #默认数据库
+      datasource:
+        master:
+          url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8&serverTimezone=UTC
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+        sub:
+          url: jdbc:mysql://localhost:3306/naocs?characterEncoding=utf-8&serverTimezone=UTC
+          username: root
+          password: 123456
+          driver-class-name: com.mysql.jdbc.Driver
+      druid:
+        initial-size: 5  #初始大小
+        max-active: 20		#最大活跃
+        min-idle: 5		#最小
+        max-wait: 60000		#最长等待时间
+        time-between-eviction-runs-millis: 60000  #俩次之间的间隔时间 毫秒
+        min-evictable-idle-time-millis: 300000		#多长时间不访问就称最小
+        validation-query: SELECT 1 FROM DUAL   #验证查询
+        test-while-idle: true			#是否开启闲置测试
+        test-on-borrow: false    #在这个上测试
+        test-on-return: false   #开启返回测试
+        filters: stat,wall,log4j  #配置过滤器
+        stat:
+          log-slow-sql: true
   security:
-    path: /swagger-ui.html
     basic:
-      enabled: flase
+      path: /swagger-ui.html
+      enabled: true
     user:
-      name: test
-      password: 123456
+      name: test #账号
+      password: 123456  #密码
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml

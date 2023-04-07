@@ -1,4 +1,4 @@
-package com.xxg.threadPool;
+package com.xxg.study;
 
 
 import org.springframework.boot.SpringApplication;

@@ -1,7 +1,7 @@
-package com.xxg.study.nacos.config;
+package com.xxg.study.config;
 
 
-import com.xxg.study.nacos.feignClient.TestFallbackFactory;
+import com.xxg.study.nacos.TestFallbackFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

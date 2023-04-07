@@ -12,6 +12,11 @@
         <module>nacosService8848</module>
         <module>nacosService-consumer</module>
         <module>serviceForSpringSecurity</module>
+        <module>rocketMQ</module>
+        <module>gateWay</module>
+        <module>threadPool</module>
+        <module>common</module>
+        <module>study-doc</module>
     </modules>
 
     <properties>

@@ -1,0 +1,33 @@
+server:
+  port: 9899
+spring:
+  application:
+    name: gateway
+  main:
+    web:
+    web-application-type: reactive
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8850
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: provider_router   #路由唯一标识
+          uri: lb://nacos-provide #路由目标地址
+          predicates:  #路由断言：判断是否符合规则
+            - Path=/privode/**
+            - Method=POST #限制请求方法只能是XX请求方式
+            - After=2028-01-20T17:42:47.789-07:00[America/Denver]
+          filters:
+            - StripPrefix=1    #http://localhost:9899/nacos-provide/privode/test/2  默认会加上去掉nacos-provide，如果不加上StripPrefix=1 路径就是http://localhost:9899/privode/test/2
+        - id: consumer_router
+          uri: lb://nacos-service
+          predicates:
+            - Path=/nacos/**
+#            - Method=POST #限制请求方法只能是XX请求方式
+          filters:
+            - StripPrefix=1

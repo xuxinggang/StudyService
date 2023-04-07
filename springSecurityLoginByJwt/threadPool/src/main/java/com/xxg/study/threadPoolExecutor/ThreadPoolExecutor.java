@@ -1,4 +1,4 @@
-package com.xxg.threadPool.threadPoolExecutor;
+package com.xxg.study.threadPoolExecutor;
 
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;

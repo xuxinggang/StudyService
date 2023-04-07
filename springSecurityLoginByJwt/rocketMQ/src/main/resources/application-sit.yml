@@ -1,12 +1,6 @@
 server:
   port: 8090
 spring:
-  cloud:
-    sentinel:
-      transport:
-        port: 6666
-        dashboard: localhost:9999
-      web-context-unify: false
   #mysql数据源
   datasource:
     dynamic:
@@ -36,6 +30,7 @@ spring:
         filters: stat,wall,log4j  #配置过滤器
         stat:
           log-slow-sql: true
+
   security:
     basic:
       path: /swagger-ui.html

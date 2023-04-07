@@ -1,6 +1,6 @@
 package com.xxg.study.nacos.controller;
 
-import com.xxg.study.nacos.feignClient.FeignClientProvide;
+import com.xxg.study.nacos.FeignClientProvide;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/nacos")
+@RequestMapping("/privode")
 @Api(value = "初探微服务之间的调用-provide")
 public class ProvideController {
 

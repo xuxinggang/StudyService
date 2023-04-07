@@ -1,7 +1,4 @@
-package com.xxg.threadPool.excutors;
-
-import com.sun.corba.se.spi.orbutil.threadpool.ThreadPool;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+package com.xxg.study.excutors;
 
 import java.util.concurrent.*;
 

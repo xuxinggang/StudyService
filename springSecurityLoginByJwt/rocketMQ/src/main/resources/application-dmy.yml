@@ -1,27 +1,18 @@
-server:
-  port: 8090
 spring:
-  cloud:
-    sentinel:
-      transport:
-        port: 6666
-        dashboard: localhost:9999
-      web-context-unify: false
-  #mysql数据源
   datasource:
     dynamic:
-      primary: master   #默认数据库
+      primary: db1   #默认数据库
       datasource:
-        master:
-          url: jdbc:mysql://localhost:3306/test?characterEncoding=utf-8&serverTimezone=UTC
+        db1:
+          url: jdbc:mysql://10.0.2.23:3306/admin-template?useUnicode=true&characterEncoding=utf-8
           username: root
           password: 123456
-          driver-class-name: com.mysql.jdbc.Driver
-        sub:
-          url: jdbc:mysql://localhost:3306/naocs?characterEncoding=utf-8&serverTimezone=UTC
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        db2:
+          url: jdbc:mysql://10.0.2.23:3306/admin-template?useUnicode=true&characterEncoding=utf-8
           username: root
           password: 123456
-          driver-class-name: com.mysql.jdbc.Driver
+          driver-class-name: com.mysql.cj.jdbc.Driver
       druid:
         initial-size: 5  #初始大小
         max-active: 20		#最大活跃
@@ -36,12 +27,3 @@ spring:
         filters: stat,wall,log4j  #配置过滤器
         stat:
           log-slow-sql: true
-  security:
-    basic:
-      path: /swagger-ui.html
-      enabled: true
-    user:
-      name: test #账号
-      password: 123456  #密码
-mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
